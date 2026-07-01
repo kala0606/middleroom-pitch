@@ -6,23 +6,23 @@
 <title>LIVE IS A VERB — a proposal for Middleroom</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..900,0..1&family=Newsreader:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 <style>
   :root{
-    --bg:#0d0b08;
-    --bg-alt:#151109;
-    --bg-card:#1b160e;
-    --ink:#f2e8d6;
-    --ink-dim:#a99a80;
-    --amber:#e8a33d;
-    --copper:#c9773a;
-    --maroon:#a3402c;
-    --glow:#ffc873;
-    --line:#332a1c;
-    --serif:'Fraunces', serif;
-    --body:'Newsreader', serif;
-    --mono:'JetBrains Mono', monospace;
+    --bg:#0f0707;
+    --bg-alt:#180a0a;
+    --bg-card:#1e0d0d;
+    --ink:#f3ece5;
+    --ink-dim:#ad8e8c;
+    --red:#e02b3f;
+    --rose:#c9636b;
+    --maroon:#7a1a1f;
+    --glow:#ff5a63;
+    --line:#301515;
+    --display:'Anton', sans-serif;
+    --body:'Archivo', sans-serif;
+    --mono:'Space Mono', monospace;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -39,7 +39,7 @@
     content:"";
     position:fixed; inset:0;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(232,163,61,0.035) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, rgba(224,43,63,0.05) 1px, transparent 0);
     background-size:22px 22px;
     pointer-events:none;
     z-index:1;
@@ -55,12 +55,12 @@
   }
   .wrap{max-width:840px; margin:0 auto; padding:0 32px; position:relative; z-index:3;}
   section{padding:120px 0;}
-  h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; color:var(--ink); line-height:1.05;}
+  h1,h2,h3{font-family:var(--display); font-weight:400; margin:0; color:var(--ink); line-height:1.05; letter-spacing:0.01em;}
   .eyebrow{
     font-family:var(--mono); font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
-    color:var(--amber); margin-bottom:18px; display:flex; align-items:center; gap:10px;
+    color:var(--red); margin-bottom:18px; display:flex; align-items:center; gap:10px;
   }
-  .eyebrow::before{content:""; width:26px; height:1px; background:var(--amber); display:inline-block;}
+  .eyebrow::before{content:""; width:26px; height:1px; background:var(--red); display:inline-block;}
 
   /* ---------- NAV ---------- */
   nav{
@@ -68,11 +68,11 @@
     display:flex; justify-content:space-between; align-items:center;
     padding:22px 32px; font-family:var(--mono); font-size:12px; letter-spacing:0.08em;
     color:var(--ink-dim); backdrop-filter:blur(6px);
-    background:linear-gradient(to bottom, rgba(13,11,8,0.85), transparent);
+    background:linear-gradient(to bottom, rgba(15,7,7,0.85), transparent);
   }
   nav .dotgrid{display:grid; grid-template-columns:repeat(4,5px); grid-template-rows:repeat(4,5px); gap:3px;}
   nav .dotgrid span{width:5px; height:5px; border-radius:1px; background:var(--line);}
-  nav .dotgrid span.on{background:var(--amber); box-shadow:0 0 6px var(--glow);}
+  nav .dotgrid span.on{background:var(--red); box-shadow:0 0 6px var(--glow);}
 
   /* ---------- HERO ---------- */
   .hero{
@@ -85,7 +85,7 @@
     letter-spacing:-0.01em;
   }
   .hero h1 em{
-    font-style:italic; font-weight:300; color:var(--amber);
+    font-style:normal; color:var(--red);
   }
   .hero .rev{opacity:0; transform:translateY(28px); animation:rise 0.9s cubic-bezier(.16,1,.3,1) forwards;}
   .hero .rev:nth-child(1){animation-delay:.05s;}
@@ -97,18 +97,18 @@
     opacity:0; transform:translateY(20px); animation:rise 0.9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.5s;
   }
   .hero .byline{
-    margin-top:44px; font-family:var(--mono); font-size:13px; color:var(--copper);
+    margin-top:44px; font-family:var(--mono); font-size:13px; color:var(--rose);
     opacity:0; transform:translateY(20px); animation:rise 0.9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.7s;
     display:flex; align-items:center; gap:14px;
   }
   .hero .byline .pulse{
-    width:8px; height:8px; border-radius:50%; background:var(--amber);
-    box-shadow:0 0 0 0 rgba(232,163,61,0.6); animation:pulse 2s infinite;
+    width:8px; height:8px; border-radius:50%; background:var(--red);
+    box-shadow:0 0 0 0 rgba(224,43,63,0.6); animation:pulse 2s infinite;
   }
   @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(232,163,61,0.55);}
-    70%{box-shadow:0 0 0 12px rgba(232,163,61,0);}
-    100%{box-shadow:0 0 0 0 rgba(232,163,61,0);}
+    0%{box-shadow:0 0 0 0 rgba(224,43,63,0.55);}
+    70%{box-shadow:0 0 0 12px rgba(224,43,63,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,43,63,0);}
   }
   .scrolldown{
     position:absolute; bottom:36px; left:32px; font-family:var(--mono); font-size:11px;
@@ -125,7 +125,7 @@
   }
   .demo-card::before{
     content:""; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg, transparent, var(--amber), transparent);
+    background:linear-gradient(90deg, transparent, var(--red), transparent);
   }
   .demo-grid{
     display:grid; grid-template-columns:repeat(8,1fr); gap:8px; margin:32px 0;
@@ -135,28 +135,28 @@
     border:1px solid var(--line); transition:background .12s, box-shadow .12s;
   }
   .demo-grid .cell.hit{
-    background:var(--amber); box-shadow:0 0 16px var(--glow);
-    border-color:var(--amber);
+    background:var(--red); box-shadow:0 0 16px var(--glow);
+    border-color:var(--red);
   }
   .demo-controls{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
   button.gen{
     font-family:var(--mono); font-size:13px; letter-spacing:0.06em; text-transform:uppercase;
-    background:var(--amber); color:#1a1206; border:none; padding:14px 26px; border-radius:3px;
+    background:var(--red); color:var(--ink); border:none; padding:14px 26px; border-radius:3px;
     cursor:pointer; font-weight:700; transition:transform .15s, background .15s;
   }
   button.gen:hover{background:var(--glow); transform:translateY(-2px);}
   button.gen:active{transform:translateY(0);}
   .demo-status{font-family:var(--mono); font-size:12px; color:var(--ink-dim);}
   .demo-caption{margin-top:26px; color:var(--ink-dim); font-size:16px; font-style:italic;}
-  .demo-caption strong{color:var(--amber); font-style:normal;}
+  .demo-caption strong{color:var(--red); font-style:normal;}
 
   /* ---------- COMPARE ---------- */
   .compare{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:40px;}
   .compare .col{border:1px solid var(--line); border-radius:4px; padding:28px; background:var(--bg-alt);}
-  .compare .col.system{border-color:var(--copper); background:linear-gradient(160deg, rgba(201,119,58,0.08), transparent);}
+  .compare .col.system{border-color:var(--red); background:linear-gradient(160deg, rgba(224,43,63,0.08), transparent);}
   .compare h3{font-size:20px; margin-bottom:12px; line-height:1.2;}
   .compare .tag{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim); display:block; margin-bottom:8px;}
-  .compare .col.system .tag{color:var(--copper);}
+  .compare .col.system .tag{color:var(--red);}
   .compare ul{margin:16px 0 0; padding-left:18px; color:var(--ink-dim); font-size:16px; line-height:1.4;}
   .compare li{margin-bottom:10px;}
   .compare li:last-child{margin-bottom:0;}
@@ -169,7 +169,7 @@
     font-family:var(--mono); font-size:10px; fill:var(--ink-dim);
   }
   .quote{
-    font-family:var(--serif); font-style:italic; font-size:24px; line-height:1.4;
+    font-family:var(--body); font-style:italic; font-weight:500; font-size:24px; line-height:1.4;
     color:var(--ink); border-left:2px solid var(--maroon); padding-left:24px; margin:36px 0;
   }
   .quote span{display:block; margin-top:10px; font-family:var(--mono); font-style:normal; font-size:12px; color:var(--ink-dim); letter-spacing:.05em;}
@@ -183,15 +183,15 @@
   .tl-item:last-child{margin-bottom:0;}
   .tl-item::before{
     content:""; position:absolute; left:4px; top:6px; width:15px; height:15px; border-radius:50%;
-    background:var(--bg); border:2px solid var(--amber);
+    background:var(--bg); border:2px solid var(--red);
   }
-  .tl-item .tl-min{font-family:var(--mono); font-size:11px; color:var(--copper); letter-spacing:.08em;}
+  .tl-item .tl-min{font-family:var(--mono); font-size:11px; color:var(--rose); letter-spacing:.08em;}
   .tl-item h3{font-size:22px; margin:6px 0 8px;}
   .tl-item p{color:var(--ink-dim); margin:0; font-size:16px;}
 
   /* ---------- CREDS ---------- */
   .creds{display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:40px;}
-  .cred-num{font-family:var(--serif); font-size:44px; color:var(--amber); line-height:1;}
+  .cred-num{font-family:var(--display); font-size:44px; color:var(--red); line-height:1;}
   .cred-label{font-family:var(--mono); font-size:12px; color:var(--ink-dim); margin-top:8px; letter-spacing:.04em;}
   @media(max-width:640px){.creds{grid-template-columns:1fr;}}
 
@@ -203,15 +203,15 @@
   .cta-btn{
     display:inline-flex; align-items:center; gap:12px; margin-top:40px;
     font-family:var(--mono); font-size:14px; letter-spacing:.06em; text-transform:uppercase;
-    color:var(--bg); background:var(--amber); padding:18px 34px; border-radius:3px;
+    color:var(--bg); background:var(--red); padding:18px 34px; border-radius:3px;
     text-decoration:none; font-weight:700; transition:transform .15s, box-shadow .15s;
   }
-  .cta-btn:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(232,163,61,0.25);}
+  .cta-btn:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(224,43,63,0.25);}
   footer{
     text-align:center; padding:40px 0 60px; font-family:var(--mono); font-size:11px;
     color:var(--ink-dim); letter-spacing:.06em; border-top:1px solid var(--line);
   }
-  ::selection{background:var(--maroon); color:var(--ink);}
+  ::selection{background:var(--red); color:var(--bg);}
 
   /* ---------- MOBILE ---------- */
   @media(max-width:640px){
@@ -301,7 +301,7 @@
     <div class="raga-block">
       <svg class="raga-wheel" width="220" height="220" viewBox="0 0 220 220" id="ragaWheel"></svg>
       <div style="max-width:320px;">
-        <p style="color:var(--ink-dim); margin:0;">Raga <strong style="color:var(--ink);">Bhupali</strong>. Amber = vadi, copper = samvadi, dim = rarely landed on. The wheel <em style="color:var(--ink); font-style:normal;">is</em> the transition matrix.</p>
+        <p style="color:var(--ink-dim); margin:0;">Raga <strong style="color:var(--ink);">Bhupali</strong>. Bright red = vadi, deep maroon = samvadi, dim = rarely landed on. The wheel <em style="color:var(--ink); font-style:normal;">is</em> the transition matrix.</p>
       </div>
     </div>
   </section>
@@ -368,7 +368,7 @@
 
   <section class="cta">
     <div class="eyebrow" style="justify-content:center;">MIDDLEROOM · BANGALORE</div>
-    <h2>Let's find an hour and a date.</h2>
+    <h2>Say the date.</h2>
   </section>
 
 </div>
@@ -406,7 +406,7 @@
     const line = document.createElementNS(svgNS,'line');
     line.setAttribute('x1',cx); line.setAttribute('y1',cy);
     line.setAttribute('x2',x); line.setAttribute('y2',y);
-    line.setAttribute('stroke','#332a1c'); line.setAttribute('stroke-width','1');
+    line.setAttribute('stroke','#301515'); line.setAttribute('stroke-width','1');
     svg.appendChild(line);
   });
   notes.forEach((n,i)=>{
@@ -416,9 +416,9 @@
     const x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
     const circ = document.createElementNS(svgNS,'circle');
     circ.setAttribute('cx',x); circ.setAttribute('cy',y); circ.setAttribute('r',r);
-    let fill = '#3a3120';
-    if(n==='Ga') fill='#e8a33d';
-    else if(n==='Dha') fill='#c9773a';
+    let fill = '#3a2020';
+    if(n==='Ga') fill='#e02b3f';
+    else if(n==='Dha') fill='#7a1a1f';
     circ.setAttribute('fill',fill);
     circ.setAttribute('opacity', n==='Ga'||n==='Dha' ? '1' : '0.55');
     svg.appendChild(circ);
@@ -426,8 +426,8 @@
     label.setAttribute('x',x); label.setAttribute('y',y+4);
     label.setAttribute('text-anchor','middle');
     label.setAttribute('class','raga-note');
-    label.setAttribute('fill', (n==='Ga'||n==='Dha') ? '#0d0b08' : '#e8dcc4');
-    label.style.fontFamily='JetBrains Mono, monospace';
+    label.setAttribute('fill', n==='Ga' ? '#0f0707' : '#f3ece5');
+    label.style.fontFamily='Space Mono, monospace';
     label.style.fontSize='11px';
     label.style.fontWeight='700';
     label.textContent = n;
