@@ -55,7 +55,7 @@
   }
   .wrap{max-width:840px; margin:0 auto; padding:0 32px; position:relative; z-index:3;}
   section{padding:120px 0;}
-  h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; color:var(--ink);}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; color:var(--ink); line-height:1.05;}
   .eyebrow{
     font-family:var(--mono); font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
     color:var(--amber); margin-bottom:18px; display:flex; align-items:center; gap:10px;
@@ -208,6 +208,29 @@
     color:var(--ink-dim); letter-spacing:.06em; border-top:1px solid var(--line);
   }
   ::selection{background:var(--maroon); color:var(--ink);}
+
+  /* ---------- MOBILE ---------- */
+  @media(max-width:640px){
+    body{font-size:18px;}
+    .wrap{padding:0 22px;}
+    section{padding:68px 0;}
+    .hero{padding-top:64px;}
+    .hero h1{font-size:clamp(58px,15vw,84px);}
+    .hero p.lede{font-size:19px;}
+    /* section headings: keep them punchy, not oversized, on a narrow screen */
+    #demo h2, #what h2, #raga h2, #hour h2, #why h2{font-size:31px !important; line-height:1.08;}
+    .cta h2{font-size:34px;}
+    .demo-card{padding:30px 24px;}
+    .demo-caption{font-size:16px;}
+    .compare .col{padding:22px;}
+    .compare ul, .compare .col p{font-size:16px;}
+    .quote{font-size:21px; padding-left:18px;}
+    .raga-block{gap:28px;}
+    .tl-item h3{font-size:20px;}
+    .tl-item p{font-size:16px;}
+    .cred-num{font-size:40px;}
+    .scrolldown{display:none;}
+  }
 </style>
 </head>
 <body>
