@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVE IS A VERB — a proposal for Middleroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..900,0..1&family=Newsreader:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  :root{
+    --bg:#0d0b08;
+    --bg-alt:#151109;
+    --bg-card:#1b160e;
+    --ink:#f2e8d6;
+    --ink-dim:#a99a80;
+    --amber:#e8a33d;
+    --copper:#c9773a;
+    --maroon:#a3402c;
+    --glow:#ffc873;
+    --line:#332a1c;
+    --serif:'Fraunces', serif;
+    --body:'Newsreader', serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:19px;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(232,163,61,0.035) 1px, transparent 0);
+    background-size:22px 22px;
+    pointer-events:none;
+    z-index:1;
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:2;
+    opacity:0.4;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:840px; margin:0 auto; padding:0 32px; position:relative; z-index:3;}
+  section{padding:120px 0;}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; color:var(--ink);}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:26px; height:1px; background:var(--amber); display:inline-block;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 32px; font-family:var(--mono); font-size:12px; letter-spacing:0.08em;
+    color:var(--ink-dim); backdrop-filter:blur(6px);
+    background:linear-gradient(to bottom, rgba(13,11,8,0.85), transparent);
+  }
+  nav .dotgrid{display:grid; grid-template-columns:repeat(4,5px); grid-template-rows:repeat(4,5px); gap:3px;}
+  nav .dotgrid span{width:5px; height:5px; border-radius:1px; background:var(--line);}
+  nav .dotgrid span.on{background:var(--amber); box-shadow:0 0 6px var(--glow);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+    padding-top:80px; position:relative;
+  }
+  .hero h1{
+    font-size:clamp(52px, 9vw, 108px);
+    line-height:0.98;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:italic; font-weight:300; color:var(--amber);
+  }
+  .hero .rev{opacity:0; transform:translateY(28px); animation:rise 0.9s cubic-bezier(.16,1,.3,1) forwards;}
+  .hero .rev:nth-child(1){animation-delay:.05s;}
+  .hero h1 .rev:nth-child(1){animation-delay:.1s;}
+  .hero h1 .rev:nth-child(2){animation-delay:.28s;}
+  @keyframes rise{to{opacity:1; transform:translateY(0);}}
+  .hero p.lede{
+    margin-top:28px; max-width:560px; font-size:21px; color:var(--ink-dim);
+    opacity:0; transform:translateY(20px); animation:rise 0.9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.5s;
+  }
+  .hero .byline{
+    margin-top:44px; font-family:var(--mono); font-size:13px; color:var(--copper);
+    opacity:0; transform:translateY(20px); animation:rise 0.9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.7s;
+    display:flex; align-items:center; gap:14px;
+  }
+  .hero .byline .pulse{
+    width:8px; height:8px; border-radius:50%; background:var(--amber);
+    box-shadow:0 0 0 0 rgba(232,163,61,0.6); animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(232,163,61,0.55);}
+    70%{box-shadow:0 0 0 12px rgba(232,163,61,0);}
+    100%{box-shadow:0 0 0 0 rgba(232,163,61,0);}
+  }
+  .scrolldown{
+    position:absolute; bottom:36px; left:32px; font-family:var(--mono); font-size:11px;
+    color:var(--ink-dim); letter-spacing:0.1em; writing-mode:vertical-rl;
+  }
+
+  /* ---------- DEMO ---------- */
+  .demo-card{
+    background:var(--bg-card); border:1px solid var(--line); border-radius:4px;
+    padding:44px 40px; position:relative; overflow:hidden;
+  }
+  .demo-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--amber), transparent);
+  }
+  .demo-grid{
+    display:grid; grid-template-columns:repeat(8,1fr); gap:8px; margin:32px 0;
+  }
+  .demo-grid .cell{
+    aspect-ratio:1; border-radius:3px; background:var(--bg-alt);
+    border:1px solid var(--line); transition:background .12s, box-shadow .12s;
+  }
+  .demo-grid .cell.hit{
+    background:var(--amber); box-shadow:0 0 16px var(--glow);
+    border-color:var(--amber);
+  }
+  .demo-controls{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+  button.gen{
+    font-family:var(--mono); font-size:13px; letter-spacing:0.06em; text-transform:uppercase;
+    background:var(--amber); color:#1a1206; border:none; padding:14px 26px; border-radius:3px;
+    cursor:pointer; font-weight:700; transition:transform .15s, background .15s;
+  }
+  button.gen:hover{background:var(--glow); transform:translateY(-2px);}
+  button.gen:active{transform:translateY(0);}
+  .demo-status{font-family:var(--mono); font-size:12px; color:var(--ink-dim);}
+  .demo-caption{margin-top:26px; color:var(--ink-dim); font-size:16px; font-style:italic;}
+  .demo-caption strong{color:var(--amber); font-style:normal;}
+
+  /* ---------- COMPARE ---------- */
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:40px;}
+  .compare .col{border:1px solid var(--line); border-radius:4px; padding:28px; background:var(--bg-alt);}
+  .compare .col.system{border-color:var(--copper); background:linear-gradient(160deg, rgba(201,119,58,0.08), transparent);}
+  .compare h3{font-size:20px; margin-bottom:12px;}
+  .compare .tag{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim);}
+  .compare .col.system .tag{color:var(--copper);}
+  .compare ul{margin:16px 0 0; padding-left:18px; color:var(--ink-dim); font-size:16px;}
+  .compare li{margin-bottom:8px;}
+  @media(max-width:640px){.compare{grid-template-columns:1fr;}}
+
+  /* ---------- RAGA WHEEL ---------- */
+  .raga-block{display:flex; gap:48px; align-items:center; flex-wrap:wrap; margin-top:36px;}
+  .raga-wheel{flex-shrink:0;}
+  .raga-note{
+    font-family:var(--mono); font-size:10px; fill:var(--ink-dim);
+  }
+  .quote{
+    font-family:var(--serif); font-style:italic; font-size:24px; line-height:1.4;
+    color:var(--ink); border-left:2px solid var(--maroon); padding-left:24px; margin:36px 0;
+  }
+  .quote span{display:block; margin-top:10px; font-family:var(--mono); font-style:normal; font-size:12px; color:var(--ink-dim); letter-spacing:.05em;}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{margin-top:48px; position:relative;}
+  .timeline::before{
+    content:""; position:absolute; left:11px; top:8px; bottom:8px; width:1px; background:var(--line);
+  }
+  .tl-item{position:relative; padding-left:44px; margin-bottom:38px;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-item::before{
+    content:""; position:absolute; left:4px; top:6px; width:15px; height:15px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--amber);
+  }
+  .tl-item .tl-min{font-family:var(--mono); font-size:11px; color:var(--copper); letter-spacing:.08em;}
+  .tl-item h3{font-size:22px; margin:6px 0 8px;}
+  .tl-item p{color:var(--ink-dim); margin:0; font-size:16px;}
+
+  /* ---------- CREDS ---------- */
+  .creds{display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:40px;}
+  .cred-num{font-family:var(--serif); font-size:44px; color:var(--amber); line-height:1;}
+  .cred-label{font-family:var(--mono); font-size:12px; color:var(--ink-dim); margin-top:8px; letter-spacing:.04em;}
+  @media(max-width:640px){.creds{grid-template-columns:1fr;}}
+
+  /* ---------- CTA ---------- */
+  .cta{
+    text-align:center; padding:140px 0 160px;
+  }
+  .cta h2{font-size:clamp(38px,6vw,64px); max-width:680px; margin:0 auto;}
+  .cta-btn{
+    display:inline-flex; align-items:center; gap:12px; margin-top:40px;
+    font-family:var(--mono); font-size:14px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--bg); background:var(--amber); padding:18px 34px; border-radius:3px;
+    text-decoration:none; font-weight:700; transition:transform .15s, box-shadow .15s;
+  }
+  .cta-btn:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(232,163,61,0.25);}
+  footer{
+    text-align:center; padding:40px 0 60px; font-family:var(--mono); font-size:11px;
+    color:var(--ink-dim); letter-spacing:.06em; border-top:1px solid var(--line);
+  }
+  ::selection{background:var(--maroon); color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <span>KALA — PROPOSAL FOR MIDDLEROOM</span>
+  <span class="dotgrid" id="navdots"></span>
+</nav>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="rev eyebrow">A ONE-HOUR WORKSHOP · COMPUTATIONAL / ALGORITHMIC MUSIC</div>
+    <h1><span class="rev" style="display:block;">LIVE IS</span><span class="rev" style="display:block;">a <em>verb.</em></span></h1>
+    <p class="lede">Not a recording played back. Not a set of faders on a fixed arrangement. A system, on stage, still deciding what happens next — in front of everyone, including me.</p>
+    <div class="byline"><span class="pulse"></span> Ujjwal Agarwal, aka KALA — proposed for Middleroom, Bangalore</div>
+    <div class="scrolldown">SCROLL ↓</div>
+  </section>
+
+  <section id="demo">
+    <div class="eyebrow">BEFORE ANYTHING ELSE</div>
+    <h2 style="font-size:38px; max-width:600px;">Press this twice. Listen to what's different the second time.</h2>
+    <div class="demo-card">
+      <div class="demo-grid" id="demoGrid"></div>
+      <div class="demo-controls">
+        <button class="gen" id="genBtn">▶ Generate a bassline</button>
+        <span class="demo-status" id="genStatus">click to start audio</span>
+      </div>
+      <p class="demo-caption">That's not random noise, and it isn't looping the same bar back at you either. It's a <strong>Markov chain</strong> — each note is a weighted decision based on the note before it. Same rules, different outcome, every single time. This exact mechanism runs underneath drums, bass, pads and lead in the live set for a full hour, unattended by any pre-written arrangement.</p>
+    </div>
+  </section>
+
+  <section id="what">
+    <div class="eyebrow">A DEFINITION, QUICKLY</div>
+    <h2 style="font-size:40px; max-width:640px;">"Generative," in one line.</h2>
+    <p style="color:var(--ink-dim); max-width:640px; margin-top:20px;">A recording of a wind chime is the same every time. The wind chime itself never repeats. Generative music builds instruments that are wind chimes, not recordings of them.</p>
+    <div class="compare">
+      <div class="col">
+        <div class="tag">Arranged track</div>
+        <h3>The recording</h3>
+        <ul>
+          <li>Every note decided in advance</li>
+          <li>Identical on loop 1 and loop 100</li>
+          <li>"Live" = pressing play, mixing faders</li>
+        </ul>
+      </div>
+      <div class="col system">
+        <div class="tag">Generative system</div>
+        <h3>The wind chime</h3>
+        <ul>
+          <li>Rules + a source of chance, every bar</li>
+          <li>Never repeats identically, even at the same tempo</li>
+          <li>Live = steering probability, in real time</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="raga">
+    <div class="eyebrow">WHY THIS MATTERS HERE</div>
+    <h2 style="font-size:40px; max-width:640px;">The raga got here first.</h2>
+    <div class="quote">You've spoken about DJing as a ritual of spiritual communication.<span>the workshop's whole argument, in one line</span></div>
+    <p style="color:var(--ink-dim); max-width:640px;">Vadi and samvadi — the emphasized and second-emphasized notes of a raga — are a weighted hierarchy. That's a probability distribution. India had Markov chains before the term existed.</p>
+    <div class="raga-block">
+      <svg class="raga-wheel" width="220" height="220" viewBox="0 0 220 220" id="ragaWheel"></svg>
+      <div style="max-width:320px;">
+        <p style="color:var(--ink-dim); margin:0;">Raga <strong style="color:var(--ink);">Bhupali</strong>. Amber = vadi, copper = samvadi, dim = rarely landed on. The wheel <em style="color:var(--ink); font-style:normal;">is</em> the transition matrix.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="hour">
+    <div class="eyebrow">THE STRUCTURE</div>
+    <h2 style="font-size:40px; max-width:620px;">One hour. Interactive throughout — I ask, the room answers, then I prove or break the answer live.</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-min">00:00</div>
+        <h3>Cold open</h3>
+        <p>I play a clip with zero framing. "Was that live — show of hands." I don't resolve it yet.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-min">00:03</div>
+        <h3>What is "live," actually</h3>
+        <p>A pushed discussion — DJ sets, arranged tracks, fader automation. The room arrives at: liveness is a system that can still surprise its own performer.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-min">00:11</div>
+        <h3>Fifteen years, and never live</h3>
+        <p>The honest version: a decade and a half arranging tracks in Ableton, technically accomplished, never once "live" by the definition the room just built.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-min">00:15</div>
+        <h3>Four building blocks, hands on the machine</h3>
+        <p>The recursive four-layer MIDI engine, the Markov-driven bassline, the stochastic drum sampler, and the raga-weighted lead — each demoed live, each preceded by a question the room has to guess before I show them.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-min">00:45</div>
+        <h3>The hook</h3>
+        <p>Four generative layers can slide into noise. A single fixed motif is the anchor a listener's ear needs to feel the piece as music, not chaos — the discipline inside the freedom.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-min">00:52</div>
+        <h3>Close the loop</h3>
+        <p>Back to the cold open — now, was it live? Open floor: someone in the room calls out a parameter change while I perform it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="eyebrow">WHY ME</div>
+    <h2 style="font-size:40px; max-width:600px;">I built the thing I'm teaching. It isn't borrowed material.</h2>
+    <div class="creds">
+      <div>
+        <div class="cred-num">15</div>
+        <div class="cred-label">YEARS WRITING ARRANGED TRACKS IN ABLETON BEFORE FINDING "LIVE"</div>
+      </div>
+      <div>
+        <div class="cred-num">4</div>
+        <div class="cred-label">GENERATIVE LAYERS RUNNING LIVE — DRUMS, BASS, PADS, LEAD — ON A MONOME GRID</div>
+      </div>
+      <div>
+        <div class="cred-num">1</div>
+        <div class="cred-label">CUSTOM ENGINE, WRITTEN FROM SCRATCH — MARKOV CHAINS, STOCHASTIC SAMPLING, RAGA-AWARE VOICING</div>
+      </div>
+      <div>
+        <div class="cred-num">0</div>
+        <div class="cred-label">BACKING TRACKS. EVERYTHING HEARD ON STAGE IS DECIDED ON STAGE</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="eyebrow" style="justify-content:center;">MIDDLEROOM · BANGALORE</div>
+    <h2>Let's find an hour and a date.</h2>
+  </section>
+
+</div>
+
+<footer>KALA · PROPOSAL PREPARED FOR SANDEEP RAMAN</footer>
+
+<script>
+// ---------- nav dot grid idle animation ----------
+(function(){
+  const nd = document.getElementById('navdots');
+  const total = 16, cells = [];
+  for(let i=0;i<total;i++){ const s=document.createElement('span'); nd.appendChild(s); cells.push(s); }
+  let t=0;
+  setInterval(()=>{
+    cells.forEach(c=>c.classList.remove('on'));
+    const on = new Set();
+    while(on.size<3) on.add(Math.floor(Math.random()*total));
+    on.forEach(i=>cells[i].classList.add('on'));
+    t++;
+  }, 700);
+})();
+
+// ---------- raga wheel (Bhupali: vadi Ga, samvadi Dha) ----------
+(function(){
+  const svg = document.getElementById('ragaWheel');
+  const notes = ['Sa','Re','Ga','Pa','Dha']; // Bhupali, no Ma/Ni
+  const weight = {Sa:0.55, Re:0.35, Ga:1.0, Pa:0.4, Dha:0.75}; // Ga = vadi, Dha = samvadi
+  const cx=110, cy=110, R=78;
+  let svgNS = "http://www.w3.org/2000/svg";
+  notes.forEach((n,i)=>{
+    const ang = (-90 + i*(360/notes.length)) * Math.PI/180;
+    const w = weight[n];
+    const r = 14 + w*20;
+    const x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
+    const line = document.createElementNS(svgNS,'line');
+    line.setAttribute('x1',cx); line.setAttribute('y1',cy);
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    line.setAttribute('stroke','#332a1c'); line.setAttribute('stroke-width','1');
+    svg.appendChild(line);
+  });
+  notes.forEach((n,i)=>{
+    const ang = (-90 + i*(360/notes.length)) * Math.PI/180;
+    const w = weight[n];
+    const r = 14 + w*20;
+    const x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
+    const circ = document.createElementNS(svgNS,'circle');
+    circ.setAttribute('cx',x); circ.setAttribute('cy',y); circ.setAttribute('r',r);
+    let fill = '#3a3120';
+    if(n==='Ga') fill='#e8a33d';
+    else if(n==='Dha') fill='#c9773a';
+    circ.setAttribute('fill',fill);
+    circ.setAttribute('opacity', n==='Ga'||n==='Dha' ? '1' : '0.55');
+    svg.appendChild(circ);
+    const label = document.createElementNS(svgNS,'text');
+    label.setAttribute('x',x); label.setAttribute('y',y+4);
+    label.setAttribute('text-anchor','middle');
+    label.setAttribute('class','raga-note');
+    label.setAttribute('fill', (n==='Ga'||n==='Dha') ? '#0d0b08' : '#e8dcc4');
+    label.style.fontFamily='JetBrains Mono, monospace';
+    label.style.fontSize='11px';
+    label.style.fontWeight='700';
+    label.textContent = n;
+    svg.appendChild(label);
+  });
+})();
+
+// ---------- Markov bassline demo (Tone.js) ----------
+(function(){
+  const grid = document.getElementById('demoGrid');
+  const cells = [];
+  for(let i=0;i<8;i++){ const d=document.createElement('div'); d.className='cell'; grid.appendChild(d); cells.push(d); }
+
+  // raga-flavored pitch pool (Bhairav-ish): root + weighted neighbors
+  const pool = ['C3','Db3','E3','F3','G3','Ab3','B3','C4'];
+  // simple transition bias: prefer staying close to the last index (stepwise), occasional leap
+  function nextIndex(last){
+    if(last === -1) return Math.floor(Math.random()*pool.length);
+    const weights = pool.map((_,i)=>{
+      const dist = Math.abs(i-last);
+      if(dist===0) return 0.4;
+      if(dist===1) return 3.0;
+      if(dist===2) return 1.2;
+      return 0.3;
+    });
+    const total = weights.reduce((a,b)=>a+b,0);
+    let r = Math.random()*total;
+    for(let i=0;i<weights.length;i++){ r-=weights[i]; if(r<=0) return i; }
+    return pool.length-1;
+  }
+
+  let synth = null;
+  let started = false;
+  const btn = document.getElementById('genBtn');
+  const status = document.getElementById('genStatus');
+
+  btn.addEventListener('click', async ()=>{
+    if(!started){
+      await Tone.start();
+      synth = new Tone.MonoSynth({
+        oscillator:{type:'sawtooth'},
+        envelope:{attack:0.005, decay:0.15, sustain:0.15, release:0.2},
+        filterEnvelope:{attack:0.01, decay:0.2, sustain:0.3, baseFrequency:200, octaves:3}
+      }).toDestination();
+      synth.volume.value = -8;
+      started = true;
+    }
+    status.textContent = 'generating…';
+    cells.forEach(c=>c.classList.remove('hit'));
+
+    let last = -1;
+    const seq = [];
+    for(let i=0;i<8;i++){ last = nextIndex(last); seq.push(last); }
+
+    const now = Tone.now();
+    seq.forEach((idx, step)=>{
+      const t = now + step*0.18;
+      synth.triggerAttackRelease(pool[idx], '16n', t);
+      setTimeout(()=>{ cells[step].classList.add('hit'); }, step*180);
+    });
+    setTimeout(()=>{ status.textContent = 'different every time — click again'; }, seq.length*180 + 200);
+  });
+})();
+</script>
+
+</body>
+</html>
