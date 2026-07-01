@@ -150,6 +150,38 @@
   .demo-caption{margin-top:26px; color:var(--ink-dim); font-size:16px; font-style:italic;}
   .demo-caption strong{color:var(--red); font-style:normal;}
 
+  /* ---------- DRUM MACHINE ---------- */
+  .drum-machine{margin:8px 0 28px; display:flex; flex-direction:column; gap:10px;}
+  .drum-row{display:grid; grid-template-columns:64px 1fr; align-items:center; gap:14px;}
+  .drum-label{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--ink-dim);}
+  .drum-cells{display:grid; grid-template-columns:repeat(16,1fr); gap:4px;}
+  .drum-cells .dcell{
+    aspect-ratio:1; border-radius:2px; background:var(--bg);
+    border:1px solid var(--line); position:relative;
+    transition:background .08s, box-shadow .08s, transform .08s;
+  }
+  /* every 4th step gets a faint beat marker */
+  .drum-cells .dcell.beat{border-color:#43201f;}
+  .drum-cells .dcell.playhead{outline:1px solid var(--rose); outline-offset:1px;}
+  .drum-cells .dcell.fire{
+    background:var(--red); border-color:var(--red);
+    box-shadow:0 0 12px var(--glow); transform:scale(1.12);
+  }
+  .drum-controls{display:flex; align-items:center; gap:22px; flex-wrap:wrap;}
+  .drum-density{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--ink-dim); display:flex; align-items:center; gap:10px;}
+  .drum-density input[type=range]{
+    -webkit-appearance:none; appearance:none; width:120px; height:3px;
+    background:var(--line); border-radius:2px; outline:none; cursor:pointer;
+  }
+  .drum-density input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%;
+    background:var(--red); box-shadow:0 0 8px var(--glow); cursor:pointer;
+  }
+  .drum-density input[type=range]::-moz-range-thumb{
+    width:14px; height:14px; border:none; border-radius:50%;
+    background:var(--red); box-shadow:0 0 8px var(--glow); cursor:pointer;
+  }
+
   /* ---------- COMPARE ---------- */
   .compare{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:40px;}
   .compare .col{border:1px solid var(--line); border-radius:4px; padding:28px; background:var(--bg-alt);}
@@ -222,9 +254,12 @@
     .hero h1{font-size:clamp(58px,15vw,84px);}
     .hero p.lede{font-size:19px;}
     /* section headings: keep them punchy, not oversized, on a narrow screen */
-    #demo h2, #what h2, #raga h2, #hour h2, #why h2{font-size:31px !important; line-height:1.08;}
+    #demo h2, #what h2, #drums h2, #raga h2, #hour h2, #why h2{font-size:31px !important; line-height:1.08;}
     .cta h2{font-size:34px;}
     .demo-card{padding:30px 24px;}
+    .drum-row{grid-template-columns:44px 1fr; gap:8px;}
+    .drum-label{font-size:9px;}
+    .drum-cells{gap:2px;}
     .demo-caption{font-size:16px;}
     .compare .col{padding:22px;}
     .compare ul, .compare .col p{font-size:16px;}
@@ -290,6 +325,23 @@
           <li>Live = steering probability, in real time</li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <section id="drums">
+    <div class="eyebrow">STOCHASTIC RHYTHM · TRY IT</div>
+    <h2 style="font-size:40px; max-width:640px;">The groove stays. The details never do.</h2>
+    <p style="color:var(--ink-dim); max-width:640px; margin-top:20px;">Every hit is a dice roll. The kick is almost certain, the hats are maybes, the ghost notes barely land. Hit play — the pattern you hear is the same groove rethinking itself every bar. Push density and the machine gets greedy.</p>
+    <div class="demo-card">
+      <div class="drum-machine" id="drumMachine"></div>
+      <div class="drum-controls">
+        <button class="gen" id="drumBtn">▶ Start the machine</button>
+        <label class="drum-density">DENSITY
+          <input type="range" id="drumDensity" min="0.4" max="1.4" step="0.05" value="1">
+        </label>
+        <span class="demo-status" id="drumStatus">click to start audio</span>
+      </div>
+      <p class="demo-caption">This is the drum sampler from the live set, cut down to three voices. In the real thing the dice are loaded per-slice across a <strong>16×16 probability grid</strong> — same principle, more chaos to steer.</p>
     </div>
   </section>
 
@@ -400,8 +452,6 @@
   let svgNS = "http://www.w3.org/2000/svg";
   notes.forEach((n,i)=>{
     const ang = (-90 + i*(360/notes.length)) * Math.PI/180;
-    const w = weight[n];
-    const r = 14 + w*20;
     const x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
     const line = document.createElementNS(svgNS,'line');
     line.setAttribute('x1',cx); line.setAttribute('y1',cy);
@@ -489,6 +539,102 @@
       setTimeout(()=>{ cells[step].classList.add('hit'); }, step*180);
     });
     setTimeout(()=>{ status.textContent = 'different every time — click again'; }, seq.length*180 + 200);
+  });
+})();
+
+// ---------- Stochastic drum machine (Tone.js, looping) ----------
+(function(){
+  const STEPS = 16;
+  // per-step firing probability for each voice — the "shape" of the groove
+  const voices = [
+    { name:'KICK',  prob:[1.0,.05,.05,.15, .05,.05,.35,.05, 1.0,.05,.05,.15, .05,.30,.05,.40] },
+    { name:'SNARE', prob:[.03,.03,.20,.05, 1.0,.05,.03,.28, .03,.05,.20,.05, 1.0,.05,.10,.35] },
+    { name:'HAT',   prob:[.55,.35,.90,.40, .55,.35,.90,.45, .55,.35,.90,.40, .55,.40,.90,.55] },
+  ];
+
+  const wrap = document.getElementById('drumMachine');
+  const cells = voices.map(()=>[]);
+  voices.forEach((v,vi)=>{
+    const row = document.createElement('div'); row.className='drum-row';
+    const label = document.createElement('span'); label.className='drum-label'; label.textContent=v.name;
+    const cellWrap = document.createElement('div'); cellWrap.className='drum-cells';
+    for(let s=0;s<STEPS;s++){
+      const c = document.createElement('div');
+      c.className = 'dcell' + (s%4===0 ? ' beat':'');
+      // base tint reflects probability so the groove's shape is visible at rest
+      const p = v.prob[s];
+      c.style.background = 'rgba(224,43,63,' + (p*0.34).toFixed(3) + ')';
+      cellWrap.appendChild(c); cells[vi].push(c);
+    }
+    row.appendChild(label); row.appendChild(cellWrap); wrap.appendChild(row);
+  });
+
+  let kit=null, started=false, playing=false, stepPos=0, repeatId=null;
+  let density = 1.0;
+  const btn = document.getElementById('drumBtn');
+  const status = document.getElementById('drumStatus');
+  const dens = document.getElementById('drumDensity');
+  dens.addEventListener('input', ()=>{ density = parseFloat(dens.value); });
+
+  function buildKit(){
+    if(kit) return;
+    const out = new Tone.Gain(0.9).toDestination();
+    const kick = new Tone.MembraneSynth({ pitchDecay:0.03, octaves:6,
+      envelope:{attack:0.001, decay:0.32, sustain:0} }).connect(out);
+    kick.volume.value = -4;
+    const snare = new Tone.NoiseSynth({ noise:{type:'white'},
+      envelope:{attack:0.001, decay:0.18, sustain:0} });
+    const snareFilt = new Tone.Filter(1400,'highpass'); snare.connect(snareFilt); snareFilt.connect(out);
+    snare.volume.value = -12;
+    const hat = new Tone.NoiseSynth({ noise:{type:'white'},
+      envelope:{attack:0.001, decay:0.045, sustain:0} });
+    const hatFilt = new Tone.Filter(8000,'highpass'); hat.connect(hatFilt); hatFilt.connect(out);
+    hat.volume.value = -20;
+    kit = { kick, snare, hat };
+  }
+
+  function trigger(vi, time){
+    if(vi===0) kit.kick.triggerAttackRelease('C1','8n', time);
+    else if(vi===1) kit.snare.triggerAttackRelease('16n', time);
+    else kit.hat.triggerAttackRelease('32n', time);
+  }
+
+  function onStep(time){
+    const s = stepPos;
+    const prev = (s+STEPS-1)%STEPS;
+    Tone.Draw.schedule(()=>{
+      cells.forEach(row=>{ row[prev].classList.remove('playhead'); row[s].classList.add('playhead'); });
+    }, time);
+    voices.forEach((v,vi)=>{
+      const p = Math.min(1, v.prob[s]*density);
+      if(Math.random() < p){
+        trigger(vi, time);
+        Tone.Draw.schedule(()=>{
+          const c = cells[vi][s]; c.classList.add('fire');
+          setTimeout(()=>c.classList.remove('fire'), 110);
+        }, time);
+      }
+    });
+    stepPos = (s+1)%STEPS;
+  }
+
+  btn.addEventListener('click', async ()=>{
+    if(!started){ await Tone.start(); buildKit(); Tone.Transport.bpm.value = 126; started = true; }
+    if(!playing){
+      stepPos = 0;
+      repeatId = Tone.Transport.scheduleRepeat(onStep, '16n');
+      Tone.Transport.start();
+      playing = true;
+      btn.textContent = '■ Stop';
+      status.textContent = 'same groove, new dice every bar';
+    } else {
+      Tone.Transport.clear(repeatId);
+      Tone.Transport.stop();
+      playing = false;
+      btn.textContent = '▶ Start the machine';
+      status.textContent = 'stopped — start again';
+      cells.forEach(row=>row.forEach(c=>c.classList.remove('playhead','fire')));
+    }
   });
 })();
 </script>
