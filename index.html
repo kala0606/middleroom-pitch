@@ -112,8 +112,11 @@
   }
   .scrolldown{
     position:absolute; bottom:36px; left:32px; font-family:var(--mono); font-size:11px;
-    color:var(--ink-dim); letter-spacing:0.1em; writing-mode:vertical-rl;
+    color:var(--ink-dim); letter-spacing:0.1em;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
   }
+  .scrolldown .scroll-label{writing-mode:vertical-rl;}
+  .scrolldown .scroll-arrow{writing-mode:horizontal-tb;}
 
   /* ---------- DEMO ---------- */
   .demo-card{
@@ -248,7 +251,7 @@
     <h1><span class="rev" style="display:block;">LIVE IS</span><span class="rev" style="display:block;">a <em>verb.</em></span></h1>
     <p class="lede">Not a recording played back. Not a set of faders on a fixed arrangement. A system, on stage, still deciding what happens next — in front of everyone, including me.</p>
     <div class="byline"><span class="pulse"></span> Ujjwal Agarwal, aka KALA — proposed for Middleroom, Bangalore</div>
-    <div class="scrolldown">SCROLL ↓</div>
+    <div class="scrolldown"><span class="scroll-label">SCROLL</span><span class="scroll-arrow">↓</span></div>
   </section>
 
   <section id="demo">
